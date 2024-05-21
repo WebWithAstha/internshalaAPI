@@ -1,0 +1,7 @@
+const express = require('express')
+const router = express.Router()
+const {homePage} = require('../controllers/indexRouterController.js')
+
+router.get('/home',homePage)
+
+module.exports = router
