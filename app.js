@@ -5,9 +5,16 @@ const app = express()
 
 
 
+// db connection
+require('./models/database.js').connectDatabase()
+
 // logger setup
 const logger = require('morgan')
 app.use(logger("tiny"))
+
+// body parser setup
+app.use(express.json())
+app.use(express.urlencoded({extended:false}))
 
 // route
 app.use('/',require('./routes/indexRouters.js'))
