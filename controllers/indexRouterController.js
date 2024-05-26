@@ -1,5 +1,5 @@
+const studentModel = require('../models/studentModel.js')
 const { catchAsyncErrors } = require("../middlewares/catchAsyncErrors");
-
 
 // async error handled using trycatch
 
@@ -13,6 +13,11 @@ const { catchAsyncErrors } = require("../middlewares/catchAsyncErrors");
 }*/
 
 
-exports.homePage = catchAsyncErrors(async function(req,res){
+exports.homePage = catchAsyncErrors(async function(req,res,next){
     res.status(200).json({message:"homepage"})
+})
+
+exports.studentSignup = catchAsyncErrors(async function(req,res,next){
+    const student = await new studentModel(req.body).save()
+    res.status(201).json(student)
 })
