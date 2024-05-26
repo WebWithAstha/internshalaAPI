@@ -1,5 +1,6 @@
 
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 
 const studentModel = new mongoose.Schema(
     {
@@ -23,4 +24,18 @@ const studentModel = new mongoose.Schema(
     }
     ,{ timestamps: true }
 )
+
+// encrypting password before saving to db
+studentModel.pre("save",function(){
+    if(!this.isModified("password")){
+        return
+    }
+    let salt = bcrypt.genSaltSync(10)
+    this.password = bcrypt.hashSync(this.password,salt)
+})
+studentModel.methods.comparePassword = async function(password){
+    console.log(this)
+    return await bcrypt.compareSync(password,this.password)
+}
+
 module.exports = mongoose.model("student",studentModel)
