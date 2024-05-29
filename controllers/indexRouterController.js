@@ -1,18 +1,7 @@
 const studentModel = require('../models/studentModel.js')
 const { catchAsyncErrors } = require("../middlewares/catchAsyncErrors");
 const ErrorHandler = require('../utils/ErrorHandler.js');
-
-// async error handled using trycatch
-
-/*exports.homePage = async function(req,res){
-    try {
-        res.status(200).json({message:"homepage"})
-        
-    } catch (error) {
-        res.status(500).json({message:error.message})
-    }
-}*/
-
+const { sendToken } = require('../utils/SendToken.js');
 
 exports.homePage = catchAsyncErrors(async function (req, res, next) {
     res.status(200).json({ message: "homepage" })
@@ -20,7 +9,8 @@ exports.homePage = catchAsyncErrors(async function (req, res, next) {
 
 exports.studentSignup = catchAsyncErrors(async function (req, res, next) {
     const student = await new studentModel(req.body).save()
-    res.status(201).json(student)
+    // res.status(201).json(student)
+    sendToken(student,201,res)
 })
 
 exports.studentSignin = catchAsyncErrors(async function (req, res, next) {
@@ -32,8 +22,19 @@ exports.studentSignin = catchAsyncErrors(async function (req, res, next) {
     if (!isMatch) {
         return next(new ErrorHandler("Incorrect password", 401))
     }
-    res.json(student)
+    // res.status(201).json(student)
+    sendToken(student,201,res)
+
 
 })
 
-exports.studentSignout = catchAsyncErrors(async function (req, res, next) { })
+exports.studentSignout = catchAsyncErrors(async function (req, res, next) {
+    res.clearCookie("token")
+    res.json({message: "Successfully signed out"})
+
+ })
+
+exports.currentStudent =catchAsyncErrors(async function (req, res, next) {
+    const student = await studentModel.findOne({_id:req.id}).exec()
+    res.status(200).json(student)
+})

@@ -1,6 +1,7 @@
 
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 const studentModel = new mongoose.Schema(
     {
@@ -15,27 +16,34 @@ const studentModel = new mongoose.Schema(
         },
         password: {
             type: String,
-            select:false,
+            select: false,
             required: [true, "Password is required."],
-            minLength:[6,"Password must have at least 6 characters"],
-            maxLength:[15,"Password must not exceed 15 characters"],
+            minLength: [6, "Password must have at least 6 characters"],
+            maxLength: [15, "Password must not exceed 15 characters"],
             // match: []
         }
     }
-    ,{ timestamps: true }
+    , { timestamps: true }
 )
 
 // encrypting password before saving to db
-studentModel.pre("save",function(){
-    if(!this.isModified("password")){
+studentModel.pre("save", function () {
+    if (!this.isModified("password")) {
         return
     }
     let salt = bcrypt.genSaltSync(10)
-    this.password = bcrypt.hashSync(this.password,salt)
+    this.password = bcrypt.hashSync(this.password, salt)
 })
-studentModel.methods.comparePassword = async function(password){
+
+// creating method to compare password
+studentModel.methods.comparePassword = async function (password) {
     console.log(this)
-    return await bcrypt.compareSync(password,this.password)
+    return await bcrypt.compareSync(password, this.password)
 }
 
-module.exports = mongoose.model("student",studentModel)
+// creating method to generate jwt token
+studentModel.methods.generateJwtToken = function () {
+    return jwt.sign({ id: this._id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION })
+}
+
+module.exports = mongoose.model("student", studentModel)
