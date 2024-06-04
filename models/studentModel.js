@@ -21,6 +21,10 @@ const studentModel = new mongoose.Schema(
             minLength: [6, "Password must have at least 6 characters"],
             maxLength: [15, "Password must not exceed 15 characters"],
             // match: []
+        },
+        resetPassword: {
+            type:Number,
+            default: 0,
         }
     }
     , { timestamps: true }
@@ -37,7 +41,6 @@ studentModel.pre("save", function () {
 
 // creating method to compare password
 studentModel.methods.comparePassword = async function (password) {
-    console.log(this)
     return await bcrypt.compareSync(password, this.password)
 }
 

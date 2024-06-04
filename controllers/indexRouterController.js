@@ -10,7 +10,7 @@ exports.homePage = catchAsyncErrors(async function (req, res, next) {
 exports.studentSignup = catchAsyncErrors(async function (req, res, next) {
     const student = await new studentModel(req.body).save()
     // res.status(201).json(student)
-    sendToken(student,201,res)
+    sendToken(student, 201, res)
 })
 
 exports.studentSignin = catchAsyncErrors(async function (req, res, next) {
@@ -20,21 +20,44 @@ exports.studentSignin = catchAsyncErrors(async function (req, res, next) {
     }
     const isMatch = await student.comparePassword(req.body.password)
     if (!isMatch) {
-        return next(new ErrorHandler("Incorrect password", 401))
+        return next(new ErrorHandler("Invalid Credentials", 401))
     }
     // res.status(201).json(student)
-    sendToken(student,201,res)
+    sendToken(student, 201, res)
 
 
 })
 
 exports.studentSignout = catchAsyncErrors(async function (req, res, next) {
     res.clearCookie("token")
-    res.json({message: "Successfully signed out"})
+    res.json({ message: "Successfully signed out" })
 
- })
+})
 
-exports.currentStudent =catchAsyncErrors(async function (req, res, next) {
-    const student = await studentModel.findOne({_id:req.id}).exec()
+exports.currentStudent = catchAsyncErrors(async function (req, res, next) {
+    const student = await studentModel.findOne({ _id: req.id }).exec()
     res.status(200).json(student)
+})
+exports.studentForgotPassword = catchAsyncErrors(async function (req, res, next) {
+    const student = await studentModel.findOne({ email: req.body.email }).exec()  
+    student.resetPassword = 0  
+    const url = `${req.protocol}://${req.hostname}/student/newpassword/${student.id}`
+    res.status(200).json({ student, url })
+})
+exports.studentNewPassword = catchAsyncErrors(async function (req, res, next) {
+    const student = await studentModel.findOne({ _id: req.params.id }).exec()
+    if(student.resetPassword === 0){
+        student.password = req.body.password
+        student.resetPassword = 1
+        await student.save()
+        res.status(200).json({ message: "password updated successfully." })
+    }else{
+        return next(new ErrorHandler("Link is invalid.", 500))
+    }
+})
+exports.resetPassword = catchAsyncErrors(async function (req, res, next) {
+    const student = await studentModel.findOne({ _id: req.id }).exec()
+        student.password = req.body.password
+        await student.save()
+        res.status(200).json({ message: "password reset successfully." })
 })
