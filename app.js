@@ -28,6 +28,10 @@ app.use(session(
 ))
 app.use(cookieParser())
 
+// fileupload setup
+const fileupload = require('express-fileupload')
+app.use(fileupload())
+
 // route
 app.use('/', require('./routes/indexRouters.js'))
 
