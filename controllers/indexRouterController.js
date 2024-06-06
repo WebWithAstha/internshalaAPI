@@ -3,7 +3,8 @@ const { catchAsyncErrors } = require("../middlewares/catchAsyncErrors");
 const ErrorHandler = require('../utils/ErrorHandler.js');
 const { sendToken } = require('../utils/SendToken.js');
 const imagekit = require('../utils/imagekit.js').initImagekit()
-const path = require('path')
+const path = require('path');
+const { query } = require('express');
 
 exports.homePage = catchAsyncErrors(async function (req, res, next) {
     res.status(200).json({ message: "homepage" })
@@ -69,7 +70,7 @@ exports.resetPassword = catchAsyncErrors(async function (req, res, next) {
 })
 
 exports.updateStudent = catchAsyncErrors(async function (req, res, next) {
-    const student = await studentModel.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true }).exec()
+    const student = await studentModel.findOneAndUpdate({ _id: req.params.id }, req.body, { runValidators:true,context:query}).exec()
     if (!student) { return next(new ErrorHandler("Oops student not found.")) }
     res.status(200).json({ message: "Student updated successfully.", student })
 })
