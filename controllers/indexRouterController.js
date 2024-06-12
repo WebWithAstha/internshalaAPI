@@ -32,6 +32,10 @@ exports.studentSignin = catchAsyncErrors(async function (req, res, next) {
 })
 
 exports.studentSignout = catchAsyncErrors(async function (req, res, next) {
+    const student = await studentModel.findOne({ _id: req.id })
+    if (!student) {
+        return next(new ErrorHandler("Student not found.", 500))
+    }
     res.clearCookie("token")
     res.json({ message: "Successfully signed out" })
 
