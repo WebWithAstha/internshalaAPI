@@ -7,9 +7,9 @@ const employeeModel = new mongoose.Schema(
     {
         organisationname: {
             type: String,
-            required: [true, "Organisation name is required."],
-            maxLength: [15, "Organisation name must not exceed 15 characters"],
-            minLength: [3, "Organisation name should have atleast 3 characters"],
+            required: [true, "organisation name is required."],
+            maxLength: [15, "organisation name must not exceed 15 characters"],
+            minLength: [3, "organisation name should have atleast 3 characters"],
         },
         firstname: {
             type: String,

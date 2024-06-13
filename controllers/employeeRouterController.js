@@ -45,52 +45,54 @@ exports.currentEmployee = catchAsyncErrors(async function (req, res, next) {
     res.status(200).json(employee)
 })
 
-// exports.employeeForgotPassword = catchAsyncErrors(async function (req, res, next) {
-//     const employee = await employeeModel.findOne({ email: req.body.email }).exec()
-//     employee.resetPassword = 0
-//     const url = `${req.protocol}://${req.hostname}/employee/newpassword/${employee.id}`
-//     res.status(200).json({ employee, url })
-// })
+exports.employeeForgotPassword = catchAsyncErrors(async function (req, res, next) {
+    const employee = await employeeModel.findOne({ email: req.body.email }).exec()
+    console.log(employee.resetPassword)
+    employee.resetPassword = 0
+    const url = `${req.protocol}://${req.hostname}/employee/newpassword/${employee.id}`
+    res.status(200).json({ employee, url })
+})
 
-// exports.employeeNewPassword = catchAsyncErrors(async function (req, res, next) {
-//     const employee = await employeeModel.findOne({ _id: req.params.id }).exec()
-//     if (employee.resetPassword === 0) {
-//         employee.password = req.body.password
-//         employee.resetPassword = 1
-//         await employee.save()
-//         res.status(200).json({ message: "password updated successfully." })
-//     } else {
-//         return next(new ErrorHandler("Link is invalid.", 500))
-//     }
-// })
+exports.employeeNewPassword = catchAsyncErrors(async function (req, res, next) {
+    const employee = await employeeModel.findOne({ _id: req.params.id }).exec()
+    if (employee.resetPassword === 0) {
+        employee.password = req.body.password
+        employee.resetPassword = 1
+        await employee.save()
+        res.status(200).json({ message: "password updated successfully." })
+    } else {
+        return next(new ErrorHandler("Link is invalid.", 500))
+    }
+})
 
-// exports.resetPassword = catchAsyncErrors(async function (req, res, next) {
-//     const employee = await employeeModel.findOne({ _id: req.id }).exec()
-//     employee.password = req.body.password
-//     await employee.save()
-//     res.status(200).json({ message: "password reset successfully." })
-// })
+exports.resetPassword = catchAsyncErrors(async function (req, res, next) {
+    const employee = await employeeModel.findOne({ _id: req.id }).exec()
+    console.log(employee)
+    employee.password = req.body.password
+    await employee.save()
+    res.status(200).json({ message: "password reset successfully." })
+})
 
-// exports.updateemployee = catchAsyncErrors(async function (req, res, next) {
-//     const employee = await employeeModel.findOneAndUpdate({ _id: req.params.id }, req.body, { runValidators:true,context:query}).exec()
-//     if (!employee) { return next(new ErrorHandler("Oops employee not found.")) }
-//     res.status(200).json({ message: "employee updated successfully.", employee })
-// })
+exports.updateEmployee = catchAsyncErrors(async function (req, res, next) {
+    const employee = await employeeModel.findOneAndUpdate({ _id: req.params.id }, req.body, { runValidators:true,context:query,new:true}).exec()
+    if (!employee) { return next(new ErrorHandler("Oops employee not found.")) }
+    res.status(200).json({ message: "employee updated successfully.", employee })
+})
 
-// exports.updateemployeeAvatar = catchAsyncErrors(async function (req, res, next) {
-//     const employee = await employeeModel.findOne({ _id: req.params.id }).exec()
-//     if (!employee) { return next(new ErrorHandler("Oops employee not found.")) }
-//     if (!req.files) { return next(new ErrorHandler("Kindly upload an avatar")) }
-//     const file = req.files.avatar
-//     const modifiedFileName  = `resumebuilder-${Date.now()}${path.extname(file.name)}`
-//     if(employee.avatar.fileId !=''){
-//         await imagekit.deleteFile(employee.avatar.fileId)
-//     }
-//     const {fileId,url} =  await imagekit.upload({
-//         file:file.data,
-//         fileName:modifiedFileName
-//     })
-//     employee.avatar = {fileId,url}
-//     await employee.save()
-//     res.status(200).json({ message: "employee avatar updated successfully."})
-// })
+exports.updateEmployeeOrgLogo = catchAsyncErrors(async function (req, res, next) {
+    const employee = await employeeModel.findOne({ _id: req.params.id }).exec()
+    if (!employee) { return next(new ErrorHandler("Oops employee not found.")) }
+    if (!req.files) { return next(new ErrorHandler("Kindly upload a logo.")) }
+    const file = req.files.organisationLogo
+    const modifiedFileName  = `resumebuilder-${Date.now()}${path.extname(file.name)}`
+    if(employee.organisationLogo.fileId !=''){
+        await imagekit.deleteFile(employee.organisationLogo.fileId)
+    }
+    const {fileId,url} =  await imagekit.upload({
+        file:file.data,
+        fileName:modifiedFileName
+    })
+    employee.organisationLogo = {fileId,url}
+    await employee.save()
+    res.status(200).json({ message: "employee profile updated successfully."})
+})
