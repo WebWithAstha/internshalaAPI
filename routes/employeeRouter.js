@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const { isAuthenticated } = require('../middlewares/auth.js')
-const { employeeSignup, employeeSignin, employeeSignout, homePage, currentEmployee, resetPassword, employeeForgotPassword, employeeNewPassword, updateEmployee, updateEmployeeOrgLogo } = require('../controllers/employeeRouterController.js')
+const { employeeSignup, employeeSignin, employeeSignout, homePage, currentEmployee, resetPassword, employeeForgotPassword, employeeNewPassword, updateEmployee, updateEmployeeOrgLogo, createInternship } = require('../controllers/employeeRouterController.js')
 
 // GET /home route
 router.get('/home',isAuthenticated,homePage)
@@ -33,5 +33,8 @@ router.post('/update/:id',isAuthenticated,updateEmployee)
 
 // POST /employee/avatar/:student route
 router.post('/logo/:id',isAuthenticated,updateEmployeeOrgLogo)
+
+// POST /employee/create/internship route
+router.post('/create/internship',isAuthenticated,createInternship)
 
 module.exports = router

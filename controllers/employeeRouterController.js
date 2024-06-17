@@ -5,6 +5,7 @@ const { sendToken } = require('../utils/SendToken.js');
 const imagekit = require('../utils/imagekit.js').initImagekit()
 const path = require('path');
 const { query } = require('express');
+const internshipModel = require('../models/internshipModel.js');
 
 exports.homePage = catchAsyncErrors(async function (req, res, next) {
     res.status(200).json({ message: "homepage" })
@@ -95,4 +96,10 @@ exports.updateEmployeeOrgLogo = catchAsyncErrors(async function (req, res, next)
     employee.organisationLogo = {fileId,url}
     await employee.save()
     res.status(200).json({ message: "employee profile updated successfully."})
+})
+
+exports.createInternship = catchAsyncErrors(async function (req, res, next) {
+    const internship = await new internshipModel(req.body).save()
+    // res.status(201).json(employee)
+    res.status(201).json(internship)
 })
