@@ -4,6 +4,8 @@ const mongoose = require('mongoose')
 const jobModel = new mongoose.Schema(
     {
         profile:String,
+        employee:{type:mongoose.Schema.Types.ObjectId,ref:"employee"},
+        appliers:[{type:mongoose.Schema.Types.ObjectId,ref:"student"}],
         skills:String,
         jobType:{type:String,enum:['In Office','Remote']},
         openings:Number,
@@ -12,7 +14,6 @@ const jobModel = new mongoose.Schema(
         salary:String,
         description:String,
         perferences:String,
-        stipend:{type:String,enum:['Fixed','Negotiable','Performance Based','Unpaid']},
     }
     , { timestamps: true }
 )

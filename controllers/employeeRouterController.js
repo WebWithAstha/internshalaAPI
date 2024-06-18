@@ -84,16 +84,16 @@ exports.updateEmployeeOrgLogo = catchAsyncErrors(async function (req, res, next)
     const employee = await employeeModel.findOne({ _id: req.params.id }).exec()
     if (!employee) { return next(new ErrorHandler("Oops employee not found.")) }
     if (!req.files) { return next(new ErrorHandler("Kindly upload a logo.")) }
-    const file = req.files.organisationLogo
+    const file = req.files.organizationLogo
     const modifiedFileName  = `resumebuilder-${Date.now()}${path.extname(file.name)}`
-    if(employee.organisationLogo.fileId !=''){
-        await imagekit.deleteFile(employee.organisationLogo.fileId)
+    if(employee.organizationLogo.fileId !=''){
+        await imagekit.deleteFile(employee.organizationLogo.fileId)
     }
     const {fileId,url} =  await imagekit.upload({
         file:file.data,
         fileName:modifiedFileName
     })
-    employee.organisationLogo = {fileId,url}
+    employee.organizationLogo = {fileId,url}
     await employee.save()
     res.status(200).json({ message: "employee profile updated successfully."})
 })

@@ -4,6 +4,8 @@ const mongoose = require('mongoose')
 const internshipModel = new mongoose.Schema(
     {
         profile:String,
+        employee:{type:mongoose.Schema.Types.ObjectId,ref:"employee"},
+        appliers:[{type:mongoose.Schema.Types.ObjectId,ref:"student"}],
         skills:String,
         internshipType:{type:String,enum:['In Office','Remote']},
         openings:Number,
@@ -11,7 +13,11 @@ const internshipModel = new mongoose.Schema(
         to:String,
         duration:String,
         responsibility:String,
-        stipend:{type:String,enum:['Fixed','Negotiable','Performance Based','Unpaid']},
+        stipend:{
+            status:{
+                type:String,enum:['Fixed','Negotiable','Performance Based','Unpaid']},
+            },
+            amount:Number,
     }
     , { timestamps: true }
 )

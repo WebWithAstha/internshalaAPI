@@ -42,6 +42,8 @@ const studentModel = new mongoose.Schema(
         resume:{
             education:[],
             experience:[],
+            internships:[{type:mongoose.Schema.Types.ObjectId,ref:"internship"}],
+            jobs:[{type:mongoose.Schema.Types.ObjectId,ref:"job"}],
             responsibility:[],
             courses:[],
             projects:[],

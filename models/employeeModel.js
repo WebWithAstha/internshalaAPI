@@ -5,11 +5,11 @@ const jwt = require('jsonwebtoken')
 
 const employeeModel = new mongoose.Schema(
     {
-        organisationname: {
+        organizationname: {
             type: String,
-            required: [true, "organisation name is required."],
-            maxLength: [15, "organisation name must not exceed 15 characters"],
-            minLength: [3, "organisation name should have atleast 3 characters"],
+            required: [true, "organization name is required."],
+            maxLength: [15, "organization name must not exceed 15 characters"],
+            minLength: [3, "organization name should have atleast 3 characters"],
         },
         firstname: {
             type: String,
@@ -23,7 +23,7 @@ const employeeModel = new mongoose.Schema(
             maxLength: [15, "Last name must not exceed 15 characters"],
             minLength: [3, "Last name should have atleast 3 characters"],
         },
-        organisationLogo: {
+        organizationLogo: {
             type: Object,
             default: {
                 fileId: '',
