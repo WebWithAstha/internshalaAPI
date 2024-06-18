@@ -5,6 +5,7 @@ const { sendToken } = require('../utils/SendToken.js');
 const imagekit = require('../utils/imagekit.js').initImagekit()
 const path = require('path');
 const { query } = require('express');
+const internshipModel = require('../models/internshipModel.js');
 
 exports.homePage = catchAsyncErrors(async function (req, res, next) {
     res.status(200).json({ message: "homepage" })
@@ -95,4 +96,16 @@ exports.updateStudentAvatar = catchAsyncErrors(async function (req, res, next) {
     student.avatar = {fileId,url}
     await student.save()
     res.status(200).json({ message: "Student avatar updated successfully."})
+})
+
+exports.applyInternship = catchAsyncErrors(async function (req, res, next) {
+    const student = await studentModel.findOne({ _id: req.id }).exec()
+    if (!student) { return next(new ErrorHandler("Student not found")) }
+    const internship = await internshipModel.findById(req.params.id).exec()
+    if (!internship) { return next(new ErrorHandler("internship not found")) }
+    student.internships.push(internship._id)
+    internship.appliers.push(student._id)
+    student.save()
+    internship.save()
+    res.status(200).json({success: true, message:"Internship applied successfully."})
 })
