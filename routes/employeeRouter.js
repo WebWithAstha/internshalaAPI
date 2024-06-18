@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const { isAuthenticated } = require('../middlewares/auth.js')
-const { employeeSignup, employeeSignin, employeeSignout, homePage, currentEmployee, resetPassword, employeeForgotPassword, employeeNewPassword, updateEmployee, updateEmployeeOrgLogo, createInternship, readSingleInternship, readInternships } = require('../controllers/employeeRouterController.js')
+const { employeeSignup, employeeSignin, employeeSignout, homePage, currentEmployee, resetPassword, employeeForgotPassword, employeeNewPassword, updateEmployee, updateEmployeeOrgLogo, createInternship, readSingleInternship, readInternships, createJob, readSingleJob, readJobs } = require('../controllers/employeeRouterController.js')
 
 // GET /home route
 router.get('/home',isAuthenticated,homePage)
@@ -34,7 +34,7 @@ router.post('/update/:id',isAuthenticated,updateEmployee)
 // POST /employee/avatar/:student route
 router.post('/logo/:id',isAuthenticated,updateEmployeeOrgLogo)
 
-// employee intership related routes
+// employee internship related routes
 
 // POST /employee/create/internship route
 router.post('/create/internship',isAuthenticated,createInternship)
@@ -44,5 +44,16 @@ router.post('/read/internship/:id',isAuthenticated,readSingleInternship)
 
 // POST /employee/read/internships route
 router.post('/read/internships',isAuthenticated,readInternships)
+
+// employee job related routes
+
+// POST /employee/create/job route
+router.post('/create/job',isAuthenticated,createJob)
+
+// POST /employee/read/job/jobId route
+router.post('/read/job/:id',isAuthenticated,readSingleJob)
+
+// POST /employee/read/jobs route
+router.post('/read/jobs',isAuthenticated,readJobs)
 
 module.exports = router

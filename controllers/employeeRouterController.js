@@ -98,6 +98,8 @@ exports.updateEmployeeOrgLogo = catchAsyncErrors(async function (req, res, next)
     res.status(200).json({ message: "employee profile updated successfully."})
 })
 
+// employee internship controllers
+
 exports.createInternship = catchAsyncErrors(async function (req, res, next) {
     const employee = await employeeModel.findById(req.id).exec();
     if (!employee) {
@@ -119,4 +121,29 @@ exports.readSingleInternship = catchAsyncErrors(async function (req, res, next) 
 exports.readInternships = catchAsyncErrors(async function (req, res, next) {
     const {internships} = await employeeModel.findById(req.id).populate('internships').exec()
     res.status(201).json(internships)
+})
+
+// employee job controllers
+
+exports.createJob = catchAsyncErrors(async function (req, res, next) {
+    const employee = await employeeModel.findById(req.id).exec();
+    if (!employee) {
+        return next(new ErrorHandler("Employee not found.", 500));
+    }
+    const job = await new jobModel(req.body).save();
+    employee.jobs.push(job._id);
+    job.employee=employee._id;
+    employee.save();
+    job.save();
+    res.status(201).json(job);
+})
+
+exports.readSingleJob = catchAsyncErrors(async function (req, res, next) {
+    const job = await jobModel.findById(req.params.id).exec()
+    res.status(201).json(job)
+})
+
+exports.readJobs = catchAsyncErrors(async function (req, res, next) {
+    const {jobs} = await employeeModel.findById(req.id).populate('jobs').exec()
+    res.status(201).json(jobs)
 })
