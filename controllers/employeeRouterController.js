@@ -99,7 +99,24 @@ exports.updateEmployeeOrgLogo = catchAsyncErrors(async function (req, res, next)
 })
 
 exports.createInternship = catchAsyncErrors(async function (req, res, next) {
-    const internship = await new internshipModel(req.body).save()
-    // res.status(201).json(employee)
+    const employee = await employeeModel.findById(req.id).exec();
+    if (!employee) {
+        return next(new ErrorHandler("Employee not found.", 500));
+    }
+    const internship = await new internshipModel(req.body).save();
+    employee.internships.push(internship._id);
+    internship.employee=employee._id;
+    employee.save();
+    internship.save();
+    res.status(201).json(internship);
+})
+
+exports.readSingleInternship = catchAsyncErrors(async function (req, res, next) {
+    const internship = await internshipModel.findById(req.params.id).exec()
     res.status(201).json(internship)
+})
+
+exports.readInternships = catchAsyncErrors(async function (req, res, next) {
+    const {internships} = await employeeModel.findById(req.id).populate('internships').exec()
+    res.status(201).json(internships)
 })
