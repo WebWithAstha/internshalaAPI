@@ -6,6 +6,7 @@ const imagekit = require('../utils/imagekit.js').initImagekit()
 const path = require('path');
 const { query } = require('express');
 const internshipModel = require('../models/internshipModel.js');
+const jobModel = require('../models/jobModel.js');
 
 exports.homePage = catchAsyncErrors(async function (req, res, next) {
     res.status(200).json({ message: "homepage" })
@@ -108,4 +109,16 @@ exports.applyInternship = catchAsyncErrors(async function (req, res, next) {
     student.save()
     internship.save()
     res.status(200).json({success: true, message:"Internship applied successfully."})
+})
+
+exports.applyJob = catchAsyncErrors(async function (req, res, next) {
+    const student = await studentModel.findOne({ _id: req.id }).exec()
+    if (!student) { return next(new ErrorHandler("Student not found")) }
+    const job = await jobModel.findById(req.params.id).exec()
+    if (!job) { return next(new ErrorHandler("Job not found")) }
+    student.jobs.push(job._id)
+    job.appliers.push(student._id)
+    student.save()
+    job.save()
+    res.status(200).json({success: true, message:"Job applied successfully."})
 })

@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {homePage,studentSignup, studentSignin,studentSignout,currentStudent,studentForgotPassword,studentNewPassword,resetPassword,updateStudent,updateStudentAvatar, applyInternship} = require('../controllers/indexRouterController.js')
+const {homePage,studentSignup, studentSignin,studentSignout,currentStudent,studentForgotPassword,studentNewPassword,resetPassword,updateStudent,updateStudentAvatar, applyInternship, applyJob} = require('../controllers/indexRouterController.js')
 const { isAuthenticated } = require('../middlewares/auth.js')
 
 // GET /home route
@@ -36,5 +36,8 @@ router.post('/student/avatar/:id',isAuthenticated,updateStudentAvatar)
 
 // POST /student/apply/internship/:internship route
 router.post('/student/apply/internship/:id',isAuthenticated,applyInternship)
+
+// POST /student/apply/job/:job route
+router.post('/student/apply/job/:id',isAuthenticated,applyJob)
 
 module.exports = router
