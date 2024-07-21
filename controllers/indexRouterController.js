@@ -7,6 +7,7 @@ const path = require('path');
 const { query } = require('express');
 const internshipModel = require('../models/internshipModel.js');
 const jobModel = require('../models/jobModel.js');
+const { sendMail } = require('../utils/sendMail.js');
 
 exports.homePage = catchAsyncErrors(async function (req, res, next) {
     res.status(200).json({ message: "homepage" })
@@ -51,8 +52,10 @@ exports.currentStudent = catchAsyncErrors(async function (req, res, next) {
 
 exports.studentForgotPassword = catchAsyncErrors(async function (req, res, next) {
     const student = await studentModel.findOne({ email: req.body.email }).exec()
+    const url = `${req.protocol}://${req.get('host')}/student/newpassword/${student.id}`
+    sendMail(req, res, next, url)
     student.resetPassword = 0
-    const url = `${req.protocol}://${req.hostname}/student/newpassword/${student.id}`
+    student.save()
     res.status(200).json({ student, url })
 })
 
@@ -70,13 +73,18 @@ exports.studentNewPassword = catchAsyncErrors(async function (req, res, next) {
 
 exports.resetPassword = catchAsyncErrors(async function (req, res, next) {
     const student = await studentModel.findOne({ _id: req.id }).exec()
-    student.password = req.body.password
+    if (req.body.currentpassword === student.password) {
+        student.password = req.body.newpassword
+
+    } else {
+        return next(new ErrorHandler("Wrong Password", 404))
+    }
     await student.save()
     res.status(200).json({ message: "password reset successfully." })
 })
 
 exports.updateStudent = catchAsyncErrors(async function (req, res, next) {
-    const student = await studentModel.findOneAndUpdate({ _id: req.params.id }, req.body, { runValidators:true,context:query}).exec()
+    const student = await studentModel.findOneAndUpdate({ _id: req.params.id }, req.body, { runValidators: true, context: query }).exec()
     if (!student) { return next(new ErrorHandler("Oops student not found.")) }
     res.status(200).json({ message: "Student updated successfully.", student })
 })
@@ -86,17 +94,17 @@ exports.updateStudentAvatar = catchAsyncErrors(async function (req, res, next) {
     if (!student) { return next(new ErrorHandler("Oops student not found.")) }
     if (!req.files) { return next(new ErrorHandler("Kindly upload an avatar")) }
     const file = req.files.avatar
-    const modifiedFileName  = `resumebuilder-${Date.now()}${path.extname(file.name)}`
-    if(student.avatar.fileId !=''){
+    const modifiedFileName = `resumebuilder-${Date.now()}${path.extname(file.name)}`
+    if (student.avatar.fileId != '') {
         await imagekit.deleteFile(student.avatar.fileId)
     }
-    const {fileId,url} =  await imagekit.upload({
-        file:file.data,
-        fileName:modifiedFileName
+    const { fileId, url } = await imagekit.upload({
+        file: file.data,
+        fileName: modifiedFileName
     })
-    student.avatar = {fileId,url}
+    student.avatar = { fileId, url }
     await student.save()
-    res.status(200).json({ message: "Student avatar updated successfully."})
+    res.status(200).json({ message: "Student avatar updated successfully." })
 })
 
 exports.applyInternship = catchAsyncErrors(async function (req, res, next) {
@@ -108,7 +116,7 @@ exports.applyInternship = catchAsyncErrors(async function (req, res, next) {
     internship.appliers.push(student._id)
     student.save()
     internship.save()
-    res.status(200).json({success: true, message:"Internship applied successfully."})
+    res.status(200).json({ success: true, message: "Internship applied successfully." })
 })
 
 exports.applyJob = catchAsyncErrors(async function (req, res, next) {
@@ -120,5 +128,5 @@ exports.applyJob = catchAsyncErrors(async function (req, res, next) {
     job.appliers.push(student._id)
     student.save()
     job.save()
-    res.status(200).json({success: true, message:"Job applied successfully."})
+    res.status(200).json({ success: true, message: "Job applied successfully." })
 })

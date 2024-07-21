@@ -23,7 +23,7 @@ router.post('/student/signout',isAuthenticated,studentSignout)
 router.post('/student/forgotpassword',studentForgotPassword)
 
 // GET /student/newpassword/:student route
-router.get('/student/newpassword/:id',studentNewPassword)
+router.post('/student/newpassword/:id',studentNewPassword)
 
 // POST /student/resetpassword route
 router.post('/student/resetpassword',isAuthenticated,resetPassword,updateStudent)

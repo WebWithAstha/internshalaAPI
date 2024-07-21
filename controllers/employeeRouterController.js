@@ -6,6 +6,7 @@ const imagekit = require('../utils/imagekit.js').initImagekit()
 const path = require('path');
 const { query } = require('express');
 const internshipModel = require('../models/internshipModel.js');
+const { sendMail } = require('../utils/sendMail.js');
 
 exports.homePage = catchAsyncErrors(async function (req, res, next) {
     res.status(200).json({ message: "homepage" })
@@ -48,10 +49,11 @@ exports.currentEmployee = catchAsyncErrors(async function (req, res, next) {
 
 exports.employeeForgotPassword = catchAsyncErrors(async function (req, res, next) {
     const employee = await employeeModel.findOne({ email: req.body.email }).exec()
-    console.log(employee.resetPassword)
+    const url = `${req.protocol}://${req.get('host')}/employee/newpassword/${employee.id}`
+    sendMail(req, res, next, url)
     employee.resetPassword = 0
-    const url = `${req.protocol}://${req.hostname}/employee/newpassword/${employee.id}`
-    res.status(200).json({ employee, url })
+    employee.save()
+    res.status(200).json({ url })
 })
 
 exports.employeeNewPassword = catchAsyncErrors(async function (req, res, next) {
@@ -68,8 +70,12 @@ exports.employeeNewPassword = catchAsyncErrors(async function (req, res, next) {
 
 exports.resetPassword = catchAsyncErrors(async function (req, res, next) {
     const employee = await employeeModel.findOne({ _id: req.id }).exec()
-    console.log(employee)
-    employee.password = req.body.password
+    if (req.body.currentpassword === employee.password) {
+        employee.password = req.body.newpassword
+
+    } else {
+        return next(new ErrorHandler("Wrong Password", 404))
+    }
     await employee.save()
     res.status(200).json({ message: "password reset successfully." })
 })
