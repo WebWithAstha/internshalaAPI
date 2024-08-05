@@ -76,44 +76,44 @@ exports.deleteExperience = catchAsyncErrors(async function(req,res,next){
 
 exports.addSkill = catchAsyncErrors(async function(req,res,next){
     const student = await studentModel.findById(req.id).exec()
-    student.resume.skill.push({...req.body,id:uuidv4()})
+    student.resume.skills.push({...req.body,id:uuidv4()})
     await student.save()
     res.status(200).json({ message: "skill add successfully."})
 })
 
 exports.editSkill = catchAsyncErrors(async function(req,res,next){
     const student = await studentModel.findById(req.id).exec()
-    const skillIndex = student.resume.skill.findIndex(e => e.id == req.params.skillId)
-    student.resume.skill[skillIndex] = {...student.resume.skill[skillIndex],...req.body}
+    const skillIndex = student.resume.skills.findIndex(e => e.id == req.params.skillId)
+    student.resume.skills[skillIndex] = {...student.resume.skills[skillIndex],...req.body}
     await student.save()
     res.status(200).json({ message: "skill updated successfully."})
 })
 
 exports.deleteSkill = catchAsyncErrors(async function(req,res,next){
     const student = await studentModel.findById(req.id).exec()
-    student.resume.skill = student.resume.skill.filter(e=>e.id !== req.params.skillId)
+    student.resume.skills = student.resume.skills.filter(e=>e.id !== req.params.skillId)
     await student.save()
     res.status(200).json({ message: "skill deleted successfully."})
 })
 
 exports.addWork = catchAsyncErrors(async function(req,res,next){
     const student = await studentModel.findById(req.id).exec()
-    student.resume.work.push({...req.body,id:uuidv4()})
+    student.resume.works.push({...req.body,id:uuidv4()})
     await student.save()
     res.status(200).json({ message: "work add successfully."})
 })
 
 exports.editWork = catchAsyncErrors(async function(req,res,next){
     const student = await studentModel.findById(req.id).exec()
-    const workIndex = student.resume.work.findIndex(e => e.id == req.params.workId)
-    student.resume.work[workIndex] = {...student.resume.work[workIndex],...req.body}
+    const workIndex = student.resume.works.findIndex(e => e.id == req.params.workId)
+    student.resume.works[workIndex] = {...student.resume.works[workIndex],...req.body}
     await student.save()
     res.status(200).json({ message: "work updated successfully."})
 })
 
 exports.deleteWork = catchAsyncErrors(async function(req,res,next){
     const student = await studentModel.findById(req.id).exec()
-    student.resume.work = student.resume.work.filter(e=>e.id !== req.params.workId)
+    student.resume.works = student.resume.works.filter(e=>e.id !== req.params.workId)
     await student.save()
     res.status(200).json({ message: "work deleted successfully."})
 })
@@ -142,29 +142,29 @@ exports.deleteAccomplishment = catchAsyncErrors(async function(req,res,next){
 
 exports.addProject = catchAsyncErrors(async function(req,res,next){
     const student = await studentModel.findById(req.id).exec()
-    student.resume.project.push({...req.body,id:uuidv4()})
+    student.resume.projects.push({...req.body,id:uuidv4()})
     await student.save()
     res.status(200).json({ message: "project add successfully."})
 })
 
 exports.editProject = catchAsyncErrors(async function(req,res,next){
     const student = await studentModel.findById(req.id).exec()
-    const projectIndex = student.resume.project.findIndex(e => e.id == req.params.projectId)
-    student.resume.project[projectIndex] = {...student.resume.project[projectIndex],...req.body}
+    const projectIndex = student.resume.projects.findIndex(e => e.id == req.params.projectId)
+    student.resume.projects[projectIndex] = {...student.resume.projects[projectIndex],...req.body}
     await student.save()
     res.status(200).json({ message: "project updated successfully."})
 })
 
 exports.deleteProject = catchAsyncErrors(async function(req,res,next){
     const student = await studentModel.findById(req.id).exec()
-    student.resume.project = student.resume.project.filter(e=>e.id !== req.params.projectId)
+    student.resume.projects = student.resume.projects.filter(e=>e.id !== req.params.projectId)
     await student.save()
     res.status(200).json({ message: "project deleted successfully."})
 })
 
 exports.addCourse = catchAsyncErrors(async function(req,res,next){
     const student = await studentModel.findById(req.id).exec()
-    student.resume.course.push({...req.body,id:uuidv4()})
+    student.resume.courses.push({...req.body,id:uuidv4()})
     await student.save()
     res.status(200).json({ message: "course add successfully."})
 })
@@ -172,14 +172,14 @@ exports.addCourse = catchAsyncErrors(async function(req,res,next){
 exports.editCourse = catchAsyncErrors(async function(req,res,next){
     const student = await studentModel.findById(req.id).exec()
     const courseIndex = student.resume.course.findIndex(e => e.id == req.params.courseId)
-    student.resume.course[courseIndex] = {...student.resume.course[courseIndex],...req.body}
+    student.resume.courses[courseIndex] = {...student.resume.courses[courseIndex],...req.body}
     await student.save()
     res.status(200).json({ message: "course updated successfully."})
 })
 
 exports.deleteCourse = catchAsyncErrors(async function(req,res,next){
     const student = await studentModel.findById(req.id).exec()
-    student.resume.course = student.resume.course.filter(e=>e.id !== req.params.courseId)
+    student.resume.courses = student.resume.courses.filter(e=>e.id !== req.params.courseId)
     await student.save()
     res.status(200).json({ message: "course deleted successfully."})
 })

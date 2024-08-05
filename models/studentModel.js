@@ -49,7 +49,7 @@ const studentModel = new mongoose.Schema(
             projects:[],
             skills:[],
             works:[],
-            acomplishment:[],
+            accomplishment:[],
         },
         email: {
             unique: true,
