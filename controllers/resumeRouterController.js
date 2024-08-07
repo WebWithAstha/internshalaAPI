@@ -171,7 +171,7 @@ exports.addCourse = catchAsyncErrors(async function(req,res,next){
 
 exports.editCourse = catchAsyncErrors(async function(req,res,next){
     const student = await studentModel.findById(req.id).exec()
-    const courseIndex = student.resume.course.findIndex(e => e.id == req.params.courseId)
+    const courseIndex = student.resume.courses.findIndex(e => e.id == req.params.courseId)
     student.resume.courses[courseIndex] = {...student.resume.courses[courseIndex],...req.body}
     await student.save()
     res.status(200).json({ message: "course updated successfully."})
