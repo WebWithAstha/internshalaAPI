@@ -72,13 +72,12 @@ exports.studentNewPassword = catchAsyncErrors(async function (req, res, next) {
 })
 
 exports.resetPassword = catchAsyncErrors(async function (req, res, next) {
-    const student = await studentModel.findOne({ _id: req.id }).exec()
-    if (req.body.currentpassword === student.password) {
-        student.password = req.body.newpassword
-
-    } else {
+    const student = await studentModel.findOne({ _id: req.id }).select("+password").exec()
+    const isMatch = await student.comparePassword(req.body.currentpassword)
+    if(!isMatch){
         return next(new ErrorHandler("Wrong Password", 404))
     }
+    student.password = req.body.newpassword
     await student.save()
     res.status(200).json({ message: "password reset successfully." })
 })

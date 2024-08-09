@@ -77,17 +77,25 @@ const studentModel = new mongoose.Schema(
 )
 
 // encrypting password before saving to db
-studentModel.pre("save", function () {
-    if (!this.isModified("password")) {
-        return
+studentModel.pre("save", function (next) {
+    console.log("hello")
+    if(this.password && this.isModified('password')) {
+        try {
+            console.log(this.password)
+            let salt = bcrypt.genSaltSync(10)
+            this.password = bcrypt.hashSync(this.password,salt)
+        } catch (error) {
+            console.log(error)
+            return next(error)
+            
+        }
     }
-    let salt = bcrypt.genSaltSync(10)
-    this.password = bcrypt.hashSync(this.password, salt)
+    next();
 })
 
 // creating method to compare password
 studentModel.methods.comparePassword = async function (password) {
-    return await bcrypt.compareSync(password, this.password)
+    return bcrypt.compareSync(password, this.password)
 }
 
 // creating method to generate jwt token

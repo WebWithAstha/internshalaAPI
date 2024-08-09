@@ -26,7 +26,7 @@ router.post('/student/forgotpassword',studentForgotPassword)
 router.post('/student/newpassword/:id',studentNewPassword)
 
 // POST /student/resetpassword route
-router.post('/student/resetpassword',isAuthenticated,resetPassword,updateStudent)
+router.post('/student/resetpassword',isAuthenticated,resetPassword)
 
 // POST /student/update/:student route
 router.post('/student/update/:id',isAuthenticated,updateStudent)
