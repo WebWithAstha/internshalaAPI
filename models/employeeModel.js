@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 
 const employeeModel = new mongoose.Schema(
     {
+        user:{ type:String,default:"employee"},
         organizationname: {
             type: String,
             required: [true, "organization name is required."],

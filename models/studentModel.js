@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 
 const studentModel = new mongoose.Schema(
     {
+        user:{ type:String,default:"student"},
         firstname:{
             type: String,
             required: [true, "First name is required."],
