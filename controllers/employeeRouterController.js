@@ -42,7 +42,7 @@ exports.employeeSignout = catchAsyncErrors(async function (req, res, next) {
 })
 
 exports.currentEmployee = catchAsyncErrors(async function (req, res, next) {
-    const employee = await employeeModel.findOne({ _id: req.id }).exec()
+    const employee = await employeeModel.findOne({ _id: req.id }).populate('internships jobs').exec()
     if (!employee) { return next(new ErrorHandler("employee not found")) }
     res.status(200).json(employee)
 })
